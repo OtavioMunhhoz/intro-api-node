@@ -3,10 +3,21 @@ const db  = require('../dataBase/connection');
 module.exports = {
     async listarPedidos (request, response) {
         try{
+
+            const sql = `
+            SELECT 
+                ped_id, cli_id, ped_data, ped_status, ped_valor_total 
+            FROM PEDIDO;
+            `;
+
+            const [row] = await db.query(sql);
+            const nItens = row.length;
+            
             return response.status(200).json({
                 sucesso: true,
                 mensagem:'Lista de Pedidos.',
-                dados: null
+                nItens,
+                dados: row
             });
         } catch (error) {
             return response.status(500).json({

@@ -3,10 +3,20 @@ const db  = require('../dataBase/connection');
 module.exports = {
     async listarRotas (request, response) {
         try{
+
+            const sql = `SELECT 
+                        rot_id, cli_id, rot_des, rot_dist, rot_data 
+                        FROM ROTAS;`;
+
+            const [row] = await db.query(sql);
+            const nItens = row.length;
+
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem:'Lista de Rotas.',
-                dados: null
+                nItens,
+                dados: row
             });
         } catch (error) {
             return response.status(500).json({
