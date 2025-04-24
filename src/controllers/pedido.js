@@ -31,11 +31,32 @@ module.exports = {
 
     async cadastrarPedidos(request, response) {
         try {
+
+            const {Idcliente, data_pedido, ped_status, ped_valor} = request.body;
+
+            const sql = `INSERT INTO PEDIDO
+                         (cli_id, ped_data, ped_status, ped_valor_total) 
+                         VALUES
+                         (?, ?, ?, ?);
+                    
+                        `;
+
+            const values = [Idcliente, data_pedido, ped_status, ped_valor];
+
+            const [result] = await db.query(sql, values);
+
+            const dados = {
+                Idcliente,
+                data_pedido,
+                ped_status,
+                ped_valor
+            };
+
             return response.status(200).json({
 
                 sucesso: true,
                 mensagem: 'cadastro de pedidos',
-                dados: null
+                dados: dados
             });
         }
         catch (error) {

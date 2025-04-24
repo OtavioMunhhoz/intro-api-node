@@ -30,11 +30,31 @@ module.exports = {
 
     async cadastrarRotas(request, response) {
         try {
+
+            const { Idcliente, descricao, distancia, data} = request.body;
+
+            const sql = `INSERT INTO ROTAS 
+                            (cli_id, rot_des, rot_dist, rot_data) 
+                        VALUES
+                            (?, ?, ?, ?);
+                        `;
+
+            const values = [Idcliente, descricao, distancia, data];
+            const [result] = await db.query(sql, values);
+
+            const dados = {
+                id: result.insertId,
+                Idcliente,
+                descricao,
+                distancia,
+                data
+            };
+            
             return response.status(200).json({
 
                 sucesso: true,
-                mensagem: 'cadastro de rotas',
-                dados: null
+                mensagem: 'Cadastro de rota concluido.',
+                dados: dados
             });
         }
         catch (error) {

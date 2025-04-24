@@ -30,17 +30,18 @@ module.exports = {
     async cadastrarClientes(request, response) {
         try {
 
-            const { nome, email, celular, endereco } = request.body;
+            const { Idempresa, nome, email, celular, endereco } = request.body;
 
             // instrução SQL
             const sql = `
-            INSERT INTO CLIENTE 
-                (cli_nome, cli_email, cli_cel, cli_end) 
-            VALUES 
-                (?, ?, ?, ?), `;
+                        INSERT INTO CLIENTE 
+                            (emp_id, cli_nome, cli_email, cli_cel, cli_end) 
+                        VALUES 
+                            (?, ?, ?, ?, ?); 
+                        `;
 
             //definição de dados a serem inseridos em um array
-            const values = [ nome, email, celular, endereco];
+            const values = [ Idempresa, nome, email, celular, endereco];
 
             // execução da instrução sql passando os parâmetros
             const [result] = await db.query(sql, values);
@@ -48,6 +49,7 @@ module.exports = {
             // identificação do ID do registro inserido
             const dados = {
                 id: result.insertId,
+                Idempresa,
                 nome,
                 email,
                 celular,
@@ -65,7 +67,7 @@ module.exports = {
         catch (error) {
             return response.status(500).json({
                 sucesso: false,
-                mensagem: 'erro no cadastro de clientes',
+                mensagem: 'Erro no cadastro de clientes',
                 dados: error.message
             });
         }
