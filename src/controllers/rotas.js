@@ -43,7 +43,6 @@ module.exports = {
             const [result] = await db.query(sql, values);
 
             const dados = {
-                id: result.insertId,
                 Idcliente,
                 descricao,
                 distancia,

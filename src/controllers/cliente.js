@@ -75,16 +75,32 @@ module.exports = {
 
     async editarClientes(request, response) {
         try {
+
+            // paramentros recebidos pelo corpo da requisição
+            const { nome, email, celular, endereco } = request.body;
+            // paramentro recebido pela URL via params ex: /usuarios/1
+            const {id} = request.params;
+            // instruções sql
+            const sql = `UPDATE CLIENTE 
+                        SET cli_nome = ?, cli_email = ?, cli_cel = ?, cli_end = ? 
+                        WHERE cli_id = ?;`;
+
+            // preparo do array com dados que serão atualizados
+            const values = [nome, email, celular, endereco, id];
+            //execução e obtenção de confirmação da atualização realizada
+            const atualizaDados = await db.query(sql, values);
+
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'editar cliente',
-                dados:null,
+                mensagem: `Cliente ${id} atualizado com sucesso!`,
+                dados: atualizaDados [0].affectedRows
+                // mensSql: atualizaDados
             });
         }
         catch (error) {
             return response.status(500).json({
                 sucesso: false,
-                mensagem: 'erro ao editar Cliente',
+                mensagem: 'Erro ao editar Cliente',
                 dados: error.message
             });
         }
