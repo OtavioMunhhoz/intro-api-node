@@ -70,16 +70,43 @@ module.exports = {
 
     async editarPedidos(request, response) {
         try {
+
+            const {data_pedido, ped_status, ped_valor} = request.body;
+            const { id } = request.params;
+
+            const sql = `UPDATE Pedido
+                            SET ped_data = ?, ped_status = ?, ped_valor_total = ?
+                        WHERE ped_id = ?;
+                        `;
+
+            const values = [data_pedido, ped_status, ped_valor, id];
+            const [result] = await db.query(sql, values); 
+
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso:false,
+                    mensagem: `Pedido ${id} não encontrado!`,
+                    dados: null
+                });
+            };
+
+            const dados = {
+                id,
+                data_pedido,
+                ped_status,
+                ped_valor,
+            };
+
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'editar pedido',
-                dados:null,
+                mensagem: `Pedido ${id} atualizado com sucesso!`,
+                dados
             });
         }
         catch (error) {
             return response.status(500).json({
                 sucesso: false,
-                mensagem: 'erro ao editar pedido',
+                mensagem: 'Erro ao editar pedido',
                 dados: error.message
             });
         }

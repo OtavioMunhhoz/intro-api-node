@@ -67,16 +67,42 @@ module.exports = {
 
     async editarRotas(request, response) {
         try {
+
+            const {rot_des, rot_dist, rot_data} = request.body;
+            const {id} = request.params;
+
+            const sql = `UPDATE Rotas
+                            SET rot_des= ?, rot_dist = ?, rot_data = ?
+                        WHERE rot_id = ?;`;
+
+            const values = [rot_des, rot_dist, rot_data, id]
+            const [result] = await db.query(sql, values);
+
+            if(result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Rota ${id} não encontrada!`,
+                    dados: null
+                });
+            };
+
+            const dados = {
+                id,
+                rot_data,
+                rot_des,
+                rot_dist
+            };
+
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'editar rota',
-                dados:null,
+                mensagem: `Rota ${id} atualizada com sucesso!`,
+                dados
             });
         }
         catch (error) {
             return response.status(500).json({
                 sucesso: false,
-                mensagem: 'erro ao editar Rota',
+                mensagem: 'Erro ao editar Rota',
                 dados: error.message
             });
         }

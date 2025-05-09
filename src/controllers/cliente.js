@@ -88,12 +88,28 @@ module.exports = {
             // preparo do array com dados que serão atualizados
             const values = [nome, email, celular, endereco, id];
             //execução e obtenção de confirmação da atualização realizada
-            const atualizaDados = await db.query(sql, values);
+            const [result] = await db.query(sql, values);
+
+            if(result.affectedRows === 0 ) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Cliente ${id} não encontrado!`,
+                    dados: null
+                });
+            };
+
+            const dados = {
+                id,
+                nome,
+                email,
+                celular,
+                endereco
+            };
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Cliente ${id} atualizado com sucesso!`,
-                dados: atualizaDados [0].affectedRows
+                dados
                 // mensSql: atualizaDados
             });
         }
