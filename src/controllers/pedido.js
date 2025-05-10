@@ -114,9 +114,26 @@ module.exports = {
 
     async apagarPedidos(request, response) {
         try{
+            // Paraametro passado via url na chamda da api pelo front-end
+            const {id} = request.params;
+            // comando de exclusão
+            const sql = `DELETE FROM Pedido WHERE ped_id = ?`;
+            //array com parametros da exclusão
+            const values = [id];
+            // executa instrução no banco de dados
+            const [result] = await db.query(sql, values);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: `Pedido ${id} não encontrado!`,
+                    dados:null
+                });
+            }
+
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'apagar pedido',
+                mensagem: 'Pedido aagado com sucesso!',
                 dados: null,
             });
         }

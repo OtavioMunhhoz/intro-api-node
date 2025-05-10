@@ -110,9 +110,24 @@ module.exports = {
 
     async apagarRotas(request, response) {
         try{
+
+            const {id} = request.params;
+            const sql = `DELETE FROM Rotas WHERE rot_id = ?`;
+            const values = [id];
+
+            const [result] = await db.query(sql, values);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: `Rota ${id} não encontrada!`,
+                    dados:null
+                });
+            }
+
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'apagar rota',
+                mensagem: 'Rota Apagada com sucessso',
                 dados: null,
             });
         }
